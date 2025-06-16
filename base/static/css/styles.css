@@ -1,0 +1,130 @@
+/* Material UI Custom Styles */
+
+/* Top App Bar */
+.custom-top-app-bar {
+    background-color: #e6ece8 !important;
+    color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 7;
+}
+
+/* Top App Bar Row */
+.mdc-top-app-bar__row {
+    display: flex;
+    width: 100%;
+}
+
+/* Top App Bar Sections */
+.mdc-top-app-bar__section {
+    display: flex;
+    align-items: center;
+}
+
+.mdc-top-app-bar__section--align-start {
+    flex: 1;
+}
+
+.mdc-top-app-bar__section--align-end {
+    flex: 1;
+    justify-content: flex-end;
+    margin-left: auto;
+}
+
+/* Title Spacing */
+.mdc-top-app-bar__title {
+    margin-left: 1em;
+}
+
+/* Desktop Navigation */
+.desktop-nav {
+    display: flex;
+    align-items: center;
+    margin-right: 16px;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    padding: 0 16px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #666;
+}
+
+/* Mobile Navigation Drawer */
+.mdc-drawer {
+    border-right: none;
+    background-color: #e6ece8;
+    width: 256px;
+}
+
+.mdc-drawer .mdc-list-item {
+    color: #333;
+}
+
+.mdc-drawer .mdc-list-item:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .desktop-nav {
+        display: none;
+    }
+    
+    .mdc-top-app-bar__section--align-end {
+        margin-left: auto;
+    }
+}
+
+@media (min-width: 769px) {
+    .mdc-drawer {
+        display: none;
+    }
+}
+
+/* Card Styles */
+.mdc-card {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Content Container */
+.content-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 64px; /* Add top margin to account for fixed header */
+}
+
+/* Typography */
+.mdc-typography--headline5 {
+    margin-bottom: 16px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.mdc-typography--body1 {
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 1.5;
+}
+
+/* Button Styles */
+.mdc-button {
+    margin-top: 16px;
+}
+
+/* Card Actions */
+.mdc-card__actions {
+    padding: 8px;
+    display: flex;
+    justify-content: flex-end;
+} 

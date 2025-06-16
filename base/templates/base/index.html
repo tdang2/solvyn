@@ -1,4 +1,5 @@
 {% load django_htmx %}
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,9 +7,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% htmx_script %}
-    <title>Hello World</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/favicon.ico' %}">
+    <!-- Material UI CSS -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@material-ui/core@4.12.4/dist/material-ui.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <!-- Material UI JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@material-ui/core@4.12.4/dist/material-ui.min.js"></script>    
+    <title>Solvyn</title>
 </head>
 <body hx-headers='{"x-csrftoken": "{{ csrf_token }}"}''>
-    <h1>Hello, World!</h1>
+    <!-- Top App Bar -->
+    <header class="mdc-top-app-bar custom-top-app-bar">
+        <div class="mdc-top-app-bar__row">
+            <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">                
+                <span class="mdc-top-app-bar__title">Solvyn</span>
+            </section>
+            <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+                <nav class="desktop-nav">
+                    <a href="#" class="nav-link">Home</a>
+                    <a href="#" class="nav-link">Features</a>
+                    <a href="#" class="nav-link">About</a>
+                    <a href="#" class="nav-link">Contact</a>
+                </nav>
+                <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Account">account_circle</button>
+            </section>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <aside class="mdc-drawer mdc-drawer--modal">
+        <div class="mdc-drawer__content">
+            <nav class="mdc-list">
+                <a class="mdc-list-item" href="#">
+                    <span class="mdc-list-item__text">Home</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <span class="mdc-list-item__text">Features</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <span class="mdc-list-item__text">About</span>
+                </a>
+                <a class="mdc-list-item" href="#">
+                    <span class="mdc-list-item__text">Contact</span>
+                </a>
+            </nav>
+        </div>
+    </aside>
+    <div class="mdc-drawer-scrim"></div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+        <div class="mdc-card">
+            <h2 class="mdc-typography--headline5">Welcome to Solvyn</h2>
+            <p class="mdc-typography--body1">This is a sample card using Material UI components.</p>
+            <div class="mdc-card__actions">
+                <button class="mdc-button mdc-button--raised">
+                    <span class="mdc-button__ripple"></span>
+                    <span class="mdc-button__label">Get Started</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Initialize Material Components -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all Material Components
+            mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
+            const topAppBar = mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('.mdc-top-app-bar'));
+            const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
+
+            // Toggle drawer when menu button is clicked
+            document.querySelector('.mdc-top-app-bar__navigation-icon').addEventListener('click', () => {
+                drawer.open = !drawer.open;
+            });
+
+            // Close drawer when clicking outside
+            document.querySelector('.mdc-drawer-scrim').addEventListener('click', () => {
+                drawer.open = false;
+            });
+        });
+    </script>
 </body>
 </html> 
