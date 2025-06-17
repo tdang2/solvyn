@@ -1,0 +1,123 @@
+# Copyright 2020 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
+
+# This file configures the base application . The frontend serves
+# public web traffic.
+
+# The bookshelf frontend replication controller ensures that at least 3
+# instances of the bookshelf app are running on the cluster.
+# For more info about Pods see:
+#   https://kubernetes.io/docs/concepts/workloads/pods/
+# For more info about Deployments:
+#   https://kubernetes.io/docs/user-guide/deployments/
+
+# [START gke_kubernetes_deployment_yaml_python]
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: base
+  labels:
+    app: base
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: base
+  template:
+    metadata:
+      labels:
+        app: base
+    spec:
+      containers:
+      - name: base
+        # Replace  with your project ID or use `make template`
+        image: gcr.io/solvyn-non-prd-pjuy/solvyn
+        # This setting makes nodes pull the docker image every time before
+        # starting the pod. This is useful when debugging, but should be turned
+        # off in production.
+        command: ["poetry", "run"]
+        args: ["gunicorn", "-b", ":8080", "solvyn.wsgi", "--timeout", "300"]
+        imagePullPolicy: Always
+        env:
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: django-secret
+                  key: django-secret
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: database
+            - name: DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: username
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: password
+            - name: DATABASE_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: cloudsql
+                  key: host
+        ports:
+        - containerPort: 8080
+      
+      - image: gcr.io/cloudsql-docker/gce-proxy:1.17
+        name: cloudsql-proxy
+        command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                  "-instances=solvyn-non-prd-pjuy:us-central1:solvyn-pg-dev=tcp:5432"]
+        volumeMounts:          
+          - name: ssl-certs
+            mountPath: /etc/ssl/certs
+          - name: cloudsql
+            mountPath: /cloudsql
+      volumes:
+        - name: cloudsql-oauth-credentials
+          secret:
+            secretName: cloudsql-oauth-credentials
+        - name: ssl-certs
+          hostPath:
+            path: /etc/ssl/certs
+        - name: cloudsql
+          emptyDir: {}
+# [END gke_kubernetes_deployment_yaml_python]
+---
+
+# [START gke_kubernetes_service_yaml_python]
+# The base service provides a load-balancing proxy over the base app
+# pods. By specifying the type as a 'LoadBalancer', Kubernetes Engine will
+# create an external HTTP load balancer.
+# For more information about Services see:
+#   https://kubernetes.io/docs/concepts/services-networking/service/
+# For more information about external HTTP load balancing see:
+#   https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/
+apiVersion: v1
+kind: Service
+metadata:
+  name: base
+  labels:
+    app: base
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: base
+# [END gke_kubernetes_service_yaml_python]
